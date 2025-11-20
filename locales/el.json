@@ -373,6 +373,21 @@
       "min_error": "Αυτό το προϊόν έχει ελάχιστο όριο {{ min }}",
       "max_error": "Αυτό το προϊόν έχει μέγιστο όριο {{ max }}",
       "step_error": "Μπορείτε να προσθέσετε αυτό το προϊόν μόνο κατά βήματα των {{ step }}"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "",
+              "option1": "",
+              "option2": "",
+              "option3": ""
+            },
+            "label": ""
+          }
+        }
+      }
     }
   },
   "localization": {

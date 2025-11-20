@@ -385,6 +385,21 @@
       "min_error": "Questo articolo ha un minimo di {{ min }}",
       "max_error": "Questo articolo ha un massimo di {{ max }}",
       "step_error": "Puoi aggiungere questo articolo solo in incrementi di {{ step }}"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "",
+              "option1": "",
+              "option2": "",
+              "option3": ""
+            },
+            "label": ""
+          }
+        }
+      }
     }
   },
   "localization": {

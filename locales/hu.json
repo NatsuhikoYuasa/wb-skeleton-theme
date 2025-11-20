@@ -373,6 +373,21 @@
       "min_error": "A termék minimális mennyisége {{ min }}",
       "max_error": "A termék maximális mennyisége {{ max }}",
       "step_error": "A termék mennyisége csak {{ step }} darabos lépésekben növelhető"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "",
+              "option1": "",
+              "option2": "",
+              "option3": ""
+            },
+            "label": ""
+          }
+        }
+      }
     }
   },
   "localization": {

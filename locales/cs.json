@@ -397,6 +397,21 @@
       "min_error": "Tato položka vyžaduje minimum: {{ min }}",
       "max_error": "Tato položka vyžaduje maximum: {{ max }}",
       "step_error": "Tuto položku můžete přidat jen v přírůstcích hodnoty: {{ step }}"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "",
+              "option1": "",
+              "option2": "",
+              "option3": ""
+            },
+            "label": ""
+          }
+        }
+      }
     }
   },
   "localization": {

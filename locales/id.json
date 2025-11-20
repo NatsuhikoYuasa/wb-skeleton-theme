@@ -373,6 +373,21 @@
       "min_error": "Item ini memiliki minimal {{ min }}",
       "max_error": "Item ini memiliki maksimum {{ max }}",
       "step_error": "Anda hanya dapat menambahkan item ini secara inkremental sebesar {{ step }}"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "",
+              "option1": "",
+              "option2": "",
+              "option3": ""
+            },
+            "label": ""
+          }
+        }
+      }
     }
   },
   "localization": {

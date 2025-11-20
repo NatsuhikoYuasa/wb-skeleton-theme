@@ -373,6 +373,21 @@
       "min_error": "Voor dit artikel geldt een minimum van {{ min }}.",
       "max_error": "Voor dit artikel geldt een maximum van {{ max }}.",
       "step_error": "Je kunt dit artikel alleen toevoegen in stappen van {{ step }}"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "",
+              "option1": "",
+              "option2": "",
+              "option3": ""
+            },
+            "label": ""
+          }
+        }
+      }
     }
   },
   "localization": {
