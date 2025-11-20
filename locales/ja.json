@@ -373,6 +373,21 @@
       "min_error": "このアイテムの最小値は{{ min }}です",
       "max_error": "このアイテムの最大値は{{ max }}です",
       "step_error": "このアイテムは、{{ step }}の増分でのみ追加できます"
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "すべてのバリエーション",
+              "option1": "オプション1（代表）",
+              "option2": "オプション2",
+              "option3": "オプション3"
+            },
+            "label": "バリエーションの展開軸"
+          }
+        }
+      }
     }
   },
   "localization": {

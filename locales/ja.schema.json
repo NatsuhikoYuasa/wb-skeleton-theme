@@ -3396,6 +3396,21 @@
       "presets": {
         "name": "迅速な注文リスト"
       }
+    },
+    "collection": {
+      "main_collection_product_grid": {
+        "settings": {
+          "variant_expand_axis": {
+            "options": {
+              "all": "すべてのバリエーション",
+              "option1": "オプション1（代表）",
+              "option2": "オプション2",
+              "option3": "オプション3"
+            },
+            "label": "バリエーションの展開軸"
+          }
+        }
+      }
     }
   }
 }
