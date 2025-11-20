@@ -32,7 +32,10 @@
       assign ratio = 1
     endif
     assign variant_url = card_product.url | append: '?variant=' | append: card_variant.id
-    assign on_sale = card_variant.compare_at_price > card_variant.price and card_variant.available
+    assign on_sale = false
+    if card_variant.compare_at_price > card_variant.price and card_variant.available
+      assign on_sale = true
+    endif
   -%}
 
   <div class="card-wrapper product-card-wrapper underline-links-hover">
