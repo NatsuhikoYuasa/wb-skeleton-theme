@@ -155,9 +155,27 @@
               {% assign skip_card_product_styles = false %}
               {% assign skip_card_variant_styles = false %}
               {% assign item_index = 0 %}
+              {%- assign variant_expand_axis = section.settings.variant_expand_axis | default: 'all' -%}
+              {%- assign variant_axis_index = 0 -%}
+              {%- case variant_expand_axis -%}
+                {%- when 'option2' -%}
+                  {%- assign variant_axis_index = 1 -%}
+                {%- when 'option3' -%}
+                  {%- assign variant_axis_index = 2 -%}
+              {%- endcase -%}
               {%- if section.settings.listing_mode == 'variant' -%}
                 {%- for product in collection.products -%}
+                  {%- assign seen_axis_values = '' -%}
                   {%- for variant in product.variants -%}
+                    {%- if variant_expand_axis != 'all' -%}
+                      {%- assign axis_value = variant.options[variant_axis_index] -%}
+                      {%- assign axis_token = '|' | append: axis_value | append: '|' -%}
+                      {%- if seen_axis_values contains axis_token -%}
+                        {%- continue -%}
+                      {%- else -%}
+                        {%- assign seen_axis_values = seen_axis_values | append: axis_token -%}
+                      {%- endif -%}
+                    {%- endif -%}
                     {%- assign item_index = item_index | plus: 1 -%}
                     {% assign lazy_load = false %}
                     {%- if item_index > 2 -%}
@@ -257,6 +275,30 @@
         {
           "value": "variant",
           "label": "Variants"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "variant_expand_axis",
+      "label": "Variant expand axis",
+      "default": "all",
+      "options": [
+        {
+          "value": "all",
+          "label": "All variants"
+        },
+        {
+          "value": "option1",
+          "label": "Option 1 (representative)"
+        },
+        {
+          "value": "option2",
+          "label": "Option 2"
+        },
+        {
+          "value": "option3",
+          "label": "Option 3"
         }
       ]
     },
