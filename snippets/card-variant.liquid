@@ -1,0 +1,253 @@
+{% comment %}
+  Renders a variant card
+
+  Accepts:
+  - card_product: {Object} Product Liquid object
+  - card_variant: {Object} Variant Liquid object
+  - media_aspect_ratio: {String} Image ratio (adapt, portrait, square)
+  - image_shape: {String} Image mask for the card
+  - show_vendor: {Boolean} Show the product vendor
+  - show_rating: {Boolean} Show the product rating (from product metafield)
+  - extend_height: {Boolean} Extend card height to fill container. Default: true
+  - lazy_load: {Boolean} Lazy load images
+  - skip_styles: {Boolean} Skip style includes when rendering multiple cards
+  - section_id: {String} ID of the parent section
+{% endcomment %}
+
+{%- unless skip_styles -%}
+  {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+{%- endunless -%}
+
+{%- if card_product and card_variant -%}
+  {%- liquid
+    assign featured_media = card_variant.featured_media | default: card_product.featured_media | default: card_product.featured_image
+    assign ratio = 1
+    if featured_media and media_aspect_ratio == 'portrait'
+      assign ratio = 0.8
+    elsif featured_media and media_aspect_ratio == 'adapt'
+      assign ratio = featured_media.aspect_ratio
+    endif
+    if ratio == 0 or ratio == null
+      assign ratio = 1
+    endif
+    assign variant_url = card_product.url | append: '?variant=' | append: card_variant.id
+    assign on_sale = card_variant.compare_at_price > card_variant.price and card_variant.available
+  -%}
+
+  <div class="card-wrapper product-card-wrapper underline-links-hover">
+    <div
+      class="
+        card card--{{ settings.card_style }}
+        {% if featured_media %} card--media{% else %} card--text{% endif %}
+        {% if settings.card_style == 'card' %} color-{{ settings.card_color_scheme }} gradient{% endif %}
+        {% if image_shape and image_shape != 'default' %} card--shape{% endif %}
+        {% if extend_height or extend_height == nil %} card--extend-height{% endif %}
+        {% if featured_media == nil and settings.card_style == 'card' %} ratio{% endif %}
+      "
+      style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+    >
+      <div
+        class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if featured_media or settings.card_style == 'standard' %} ratio{% endif %}"
+        style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+      >
+        {%- if featured_media -%}
+          <div class="card__media{% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
+            <div class="media media--transparent media--hover-effect">
+              {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+              <img
+                srcset="
+                  {%- if featured_media.width >= 165 -%}{{ featured_media | image_url: width: 165 }} 165w,{%- endif -%}
+                  {%- if featured_media.width >= 360 -%}{{ featured_media | image_url: width: 360 }} 360w,{%- endif -%}
+                  {%- if featured_media.width >= 533 -%}{{ featured_media | image_url: width: 533 }} 533w,{%- endif -%}
+                  {%- if featured_media.width >= 720 -%}{{ featured_media | image_url: width: 720 }} 720w,{%- endif -%}
+                  {%- if featured_media.width >= 940 -%}{{ featured_media | image_url: width: 940 }} 940w,{%- endif -%}
+                  {%- if featured_media.width >= 1066 -%}{{ featured_media | image_url: width: 1066 }} 1066w,{%- endif -%}
+                  {{ featured_media | image_url }} {{ featured_media.width }}w
+                "
+                src="{{ featured_media | image_url: width: 533 }}"
+                sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+                alt="{{ featured_media.alt | default: card_product.title | escape }}"
+                class="motion-reduce"
+                {% unless lazy_load == false %}
+                  loading="lazy"
+                {% endunless %}
+                width="{{ featured_media.width }}"
+                height="{{ featured_media.height }}"
+              >
+              {% comment %}theme-check-enable ImgLazyLoading{% endcomment %}
+            </div>
+          </div>
+        {%- endif -%}
+        <div class="card__content">
+          <div class="card__information">
+            <h3
+              class="card__heading"
+              {% if featured_media == null and settings.card_style == 'standard' %}
+                id="title-{{ section_id }}-{{ card_variant.id }}"
+              {% endif %}
+            >
+              <a
+                href="{{ variant_url }}"
+                id="VariantCard-{{ section_id }}-{{ card_variant.id }}"
+                class="full-unstyled-link"
+                aria-labelledby="VariantCard-{{ section_id }}-{{ card_variant.id }} Badge-{{ section_id }}-{{ card_variant.id }}"
+              >
+                {{ card_product.title | escape }}
+              </a>
+            </h3>
+            {%- if card_variant.title != 'Default Title' -%}
+              <p class="card__caption">{{ card_variant.title | escape }}</p>
+            {%- endif -%}
+          </div>
+          <div class="card__badge {{ settings.badge_position }}">
+            {%- if card_variant.available == false -%}
+              <span
+                id="Badge-{{ section_id }}-{{ card_variant.id }}"
+                class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
+              >
+                {{- 'products.product.sold_out' | t -}}
+              </span>
+            {%- elsif on_sale -%}
+              <span
+                id="Badge-{{ section_id }}-{{ card_variant.id }}"
+                class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+              >
+                {{- 'products.product.on_sale' | t -}}
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+      <div class="card__content">
+        <div class="card__information">
+          <h3
+            class="card__heading{% if featured_media or settings.card_style == 'standard' %} h5{% endif %}"
+            {% if featured_media or settings.card_style == 'card' %}
+              id="title-{{ section_id }}-{{ card_variant.id }}"
+            {% endif %}
+          >
+            <a
+              href="{{ variant_url }}"
+              id="VariantCardLink-{{ section_id }}-{{ card_variant.id }}"
+              class="full-unstyled-link"
+              aria-labelledby="VariantCardLink-{{ section_id }}-{{ card_variant.id }} Badge-{{ section_id }}-{{ card_variant.id }}"
+            >
+              {{ card_product.title | escape }}
+            </a>
+          </h3>
+
+          {%- if card_variant.title != 'Default Title' -%}
+            <div class="caption-with-letter-spacing light">{{ card_variant.title | escape }}</div>
+          {%- endif -%}
+          {%- if show_vendor -%}
+            <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+            <div class="caption-with-letter-spacing light">{{ card_product.vendor }}</div>
+          {%- endif -%}
+
+          {%- if show_rating and card_product.metafields.reviews.rating.value != blank -%}
+            {% liquid
+              assign rating_decimal = 0
+              assign decimal = card_product.metafields.reviews.rating.value.rating | modulo: 1
+              if decimal >= 0.3 and decimal <= 0.7
+                assign rating_decimal = 0.5
+              elsif decimal > 0.7
+                assign rating_decimal = 1
+              endif
+            %}
+            <div
+              class="rating"
+              role="img"
+              aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: card_product.metafields.reviews.rating.value, rating_max: card_product.metafields.reviews.rating.value.scale_max }}"
+            >
+              <span
+                aria-hidden="true"
+                class="rating-star"
+                style="--rating: {{ card_product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ card_product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"
+              ></span>
+            </div>
+            <p class="rating-text caption">
+              <span aria-hidden="true">
+                {{- card_product.metafields.reviews.rating.value }} /
+                {{ card_product.metafields.reviews.rating.value.scale_max -}}
+              </span>
+            </p>
+            <p class="rating-count caption">
+              <span aria-hidden="true">({{ card_product.metafields.reviews.rating_count }})</span>
+              <span class="visually-hidden">
+                {{- card_product.metafields.reviews.rating_count }}
+                {{ 'accessibility.total_reviews' | t -}}
+              </span>
+            </p>
+          {%- endif -%}
+
+          {%- liquid
+            assign compare_at_price = card_variant.compare_at_price
+            assign variant_price = card_variant.price | default: 1999
+            assign available = card_variant.available | default: false
+            if settings.currency_code_enabled
+              assign money_price = variant_price | money_with_currency
+              assign money_compare_at = compare_at_price | money_with_currency
+            else
+              assign money_price = variant_price | money
+              assign money_compare_at = compare_at_price | money
+            endif
+          -%}
+          <div
+            class="
+              price
+              {% if available == false %} price--sold-out{% endif %}
+              {% if compare_at_price > variant_price %} price--on-sale{% endif %}
+            "
+          >
+            <div class="price__container">
+              <div class="price__regular">
+                {%- if compare_at_price > variant_price -%}
+                  <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                  <span>
+                    <s class="price-item price-item--regular">
+                      {{ money_compare_at }}
+                    </s>
+                  </span>
+                {%- endif -%}
+                <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                <span class="price-item price-item--regular">
+                  {{ money_price }}
+                </span>
+              </div>
+              <div class="price__sale">
+                <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+                <span>
+                  <s class="price-item price-item--regular">
+                    {{ money_compare_at }}
+                  </s>
+                </span>
+                <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
+                <span class="price-item price-item--sale price-item--last">
+                  {{ money_price }}
+                </span>
+              </div>
+              {%- if card_variant.unit_price_measurement -%}
+                {% render 'unit-price', price: card_variant.unit_price, measurement: card_variant.unit_price_measurement %}
+              {%- endif -%}
+            </div>
+            {%- if compare_at_price > variant_price -%}
+              <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
+                {{ 'products.product.on_sale' | t }}
+              </span>
+            {%- endif -%}
+            {%- if available == false -%}
+              <span class="badge price__badge-sold-out color-{{ settings.sold_out_badge_color_scheme }}">
+                {{ 'products.product.sold_out' | t }}
+              </span>
+            {%- endif -%}
+          </div>
+
+          <a class="button button--secondary button--full-width" href="{{ variant_url }}">
+            {{ 'products.product.add_to_cart' | t }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
