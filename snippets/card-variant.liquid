@@ -12,6 +12,8 @@
   - lazy_load: {Boolean} Lazy load images
   - skip_styles: {Boolean} Skip style includes when rendering multiple cards
   - section_id: {String} ID of the parent section
+  - quick_add: {Boolean} Enable quick add button (none to hide)
+  - quick_add_mode: {String} Quick add mode
 {% endcomment %}
 
 {%- unless skip_styles -%}
@@ -36,6 +38,7 @@
     if card_variant.compare_at_price > card_variant.price and card_variant.available
       assign on_sale = true
     endif
+    assign quick_add_mode = quick_add_mode | default: quick_add
   -%}
 
   <div class="card-wrapper product-card-wrapper underline-links-hover">
@@ -246,9 +249,11 @@
             {%- endif -%}
           </div>
 
-          <a class="button button--secondary button--full-width" href="{{ variant_url }}">
-            {{ 'products.product.add_to_cart' | t }}
-          </a>
+          {%- if quick_add_mode != 'none' -%}
+            <a class="button button--secondary button--full-width" href="{{ variant_url }}">
+              {{ 'products.product.add_to_cart' | t }}
+            </a>
+          {%- endif -%}
         </div>
       </div>
     </div>
